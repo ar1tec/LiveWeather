@@ -9,38 +9,40 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParsingUtils {
+public final class ParsingUtils {
     //every object is inside list
-    private final String FORECAST_LIST_ARRAY = "list";
+    private static final String FORECAST_LIST_ARRAY = "list";
 
-    private final String DATE_OBJECT = "dt";
+    private static final String DATE_OBJECT = "dt";
 
     //temp & pressure inside main
-    private final String MAIN_TEMP_OBJECT = "main";
-    private final String TEMP_MIN = "temp_min";
-    private final String TEMP_MAX = "temp_max";
-    private final String PRESSURE = "pressure";
+    private static final String MAIN_TEMP_OBJECT = "main";
+    private static final String TEMP_MIN = "temp_min";
+    private static final String TEMP_MAX = "temp_max";
+    private static final String PRESSURE = "pressure";
+    private static final String HUMIDITY = "humidity";
 
-    private final String WEATHER_ARRAY = "weather";
-    private final String WEATHER_ID = "id";
+    private static final String WEATHER_ARRAY = "weather";
+    private static final String WEATHER_ID = "id";
 
-    private final String WIND_OBJECT = "wind";
-    private final String WIND_SPEED = "speed";
-    private final String WIND_DEGREES = "deg";
+    private static final String WIND_OBJECT = "wind";
+    private static final String WIND_SPEED = "speed";
+    private static final String WIND_DEGREES = "deg";
 
-    public List<Forecast> parseJson(final String json) throws JSONException {
+    public static List<Forecast> parseJson(final String json) throws JSONException {
         final JSONObject jsonObject = new JSONObject(json);
         final JSONArray listArray = jsonObject.getJSONArray(FORECAST_LIST_ARRAY);
         final List<Forecast> forecastList = new ArrayList<>();
 
         for (int i = 0; i < listArray.length(); i++) {
-            long date;
-            double tempMin;
-            double tempMax;
-            double pressure;
-            int id;
-            double windSpeed;
-            double windDeg;
+            final long date;
+            final double tempMin;
+            final double tempMax;
+            final double pressure;
+            final int id;
+            final double windSpeed;
+            final double windDeg;
+            final int humidity;
 
             final JSONObject listObject = listArray.getJSONObject(i);
             date = listObject.getLong(DATE_OBJECT);
@@ -49,6 +51,7 @@ public class ParsingUtils {
             tempMin = mainTempObject.getDouble(TEMP_MIN);
             tempMax = mainTempObject.getDouble(TEMP_MAX);
             pressure = mainTempObject.getDouble(PRESSURE);
+            humidity = mainTempObject.getInt(HUMIDITY);
 
             final JSONArray weatherArray = listObject.getJSONArray(WEATHER_ARRAY);
             final JSONObject weatherObject = weatherArray.getJSONObject(0);
@@ -58,10 +61,11 @@ public class ParsingUtils {
             windSpeed = windObject.getDouble(WIND_SPEED);
             windDeg = windObject.getDouble(WIND_DEGREES);
 
-            //TODO continue here: add Forecast to list
-
+            final Forecast forecast = new Forecast(tempMin, tempMax, pressure, humidity, id, windSpeed,
+                    windDeg, date);
+            forecastList.add(forecast);
         }
-        return null;
+        return forecastList;
     }
 
 

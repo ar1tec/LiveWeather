@@ -11,18 +11,23 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
+import com.maxvi.max.liveweather.models.Forecast;
 import com.maxvi.max.liveweather.utilities.NetworkUtils;
+import com.maxvi.max.liveweather.utilities.ParsingUtils;
+
+import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements ForecastAdapter.ForecastOnClickListener,
         LoaderManager.LoaderCallbacks<String> {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
     private static final int LOADER_ID = 22;
@@ -87,7 +92,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(final Loader<String> loader, final String data) {
-        Log.d("MainActivity", "onLoadFinished: " + data);
+        List<Forecast> forecastList = null;
+        try {
+            forecastList = ParsingUtils.parseJson(data);
+        } catch (final JSONException pE) {
+            pE.printStackTrace();
+        }
+        assert forecastList != null;
+        int i = 0;
+        for (final Forecast forecast : forecastList) {
+            Log.d(TAG, "onLoadFinished: " + i + "  " + forecast);
+            i++;
+        }
     }
 
     @Override
@@ -113,6 +129,4 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-
-
 }

@@ -3,17 +3,14 @@ package com.maxvi.max.liveweather.utilities;
 import android.net.Uri;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class NetworkUtils {
+public final class NetworkUtils {
 
     private static final String DEFAULT_URL = "http://api.openweathermap.org/data/2.5/forecast";
     private static final String API_KEY = "6564c15f01e75f23035b0c24b98020ac";

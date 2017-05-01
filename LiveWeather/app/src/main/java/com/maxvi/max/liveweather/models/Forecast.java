@@ -88,4 +88,18 @@ public class Forecast {
     public void setDate(final long pDate) {
         date = pDate;
     }
+
+    @Override
+    public String toString() {
+        return "Forecast{" +
+                "tempMin=" + tempMin +
+                ", tempMax=" + tempMax +
+                ", pressure=" + pressure +
+                ", humidity=" + humidity +
+                ", description=" + description +
+                ", windSpeed=" + windSpeed +
+                ", windDegrees=" + windDegrees +
+                ", date=" + date +
+                '}';
+    }
 }
