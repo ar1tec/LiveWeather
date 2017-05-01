@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">LiveWeather</string>
+    <string name="activity_name_details">Details</string>
+    <string name="key_extra_weather_day_data" translatable="false">key_weather_data</string>
+    <string name="title_settings">Settings</string>
+
+    <!--Preferences-->
+    <!--Location preferences-->
+    <string name="pref_location_default_value" translatable="false">Hrodna</string>
+    <string name="pref_title_location">Location</string>
+    <string name="pref_key_location" translatable="false">pref_key_location</string>
+
+
+    <!--Temperature units preferences-->
+    <string name="pref_title_temperature_units">Temperature units</string>
+    <string name="pref_key_temperature_units" translatable="false">key_temperature_units</string>
+
+    <string name="pref_units_label_celsius">Celsius</string>
+    <string name="pref_units_celsius" translatable="false">celsius</string>
+
+    <string name="pref_units_label_fahrenheit">Fahrenheit</string>
+    <string name="pref_units_fahrenheit" translatable="false">fahrenheit</string>
+</resources>
