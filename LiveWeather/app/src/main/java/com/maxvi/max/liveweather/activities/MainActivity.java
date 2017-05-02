@@ -8,9 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
     private static final int LOADER_ID = 22;
+    private ProgressBar mProgressBar;
+    private TextView mErrorTextView;
 
     @Override
     public void onClick(final String weatherData) {
@@ -45,6 +49,16 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mErrorTextView = (TextView) findViewById(R.id.tv_error_message);
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
+
+        setupRecyclerView();
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
+    }
+
+    private void setupRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_forecast);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
@@ -52,26 +66,20 @@ public class MainActivity extends AppCompatActivity
 
         mForecastAdapter = new ForecastAdapter(this, this);
         mRecyclerView.setAdapter(mForecastAdapter);
-
-        if (getSupportLoaderManager().getLoader(LOADER_ID) == null) {
-            getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-        } else {
-            getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
-        }
     }
-
 
     @Override
     public Loader<String> onCreateLoader(final int id, final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
 
-            String data;
+            private String mData;
 
             @Override
             protected void onStartLoading() {
-                if (data != null) {
-                    deliverResult(data);
+                if (mData != null) {
+                    deliverResult(mData);
                 } else {
+                    mProgressBar.setVisibility(View.VISIBLE);
                     forceLoad();
                 }
             }
@@ -87,23 +95,40 @@ public class MainActivity extends AppCompatActivity
                 return response;
             }
 
+            @Override
+            public void deliverResult(final String data) {
+                mData = data;
+                super.deliverResult(data);
+            }
         };
     }
 
     @Override
     public void onLoadFinished(final Loader<String> loader, final String data) {
-        List<Forecast> forecastList = null;
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+        final List<Forecast> forecastList;
         try {
             forecastList = ParsingUtils.parseJson(data);
+
+            if (forecastList != null) {
+                mForecastAdapter.setData(forecastList);
+                mForecastAdapter.notifyDataSetChanged();
+            } else {
+                showErrorMessage();
+            }
+
+
+
         } catch (final JSONException pE) {
             pE.printStackTrace();
         }
-        assert forecastList != null;
-        int i = 0;
-        for (final Forecast forecast : forecastList) {
-            Log.d(TAG, "onLoadFinished: " + i + "  " + forecast);
-            i++;
-        }
+
+    }
+
+    private void showErrorMessage() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorTextView.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -9,18 +9,24 @@ import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.data.FakeData;
+import com.maxvi.max.liveweather.models.Forecast;
+
+import java.util.List;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
     private final Context mContext;
-    private final String[] mData;
+    private List<Forecast> mData;
     private final ForecastOnClickListener mForecastOnClickListener;
 
     public ForecastAdapter(final Context pContext,
                            final ForecastOnClickListener pForecastOnClickListener) {
-        mData = FakeData.getData();
         mContext = pContext;
         mForecastOnClickListener = pForecastOnClickListener;
+    }
+
+    public void setData(final List<Forecast> pData) {
+        mData = pData;
     }
 
     public interface ForecastOnClickListener {
@@ -35,7 +41,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(final ForecastViewHolder holder, final int position) {
-        holder.forecastTextView.setText(mData[position]);
+        holder.forecastTextView.setText(mData.get(position).toString());
     }
 
     @Override
@@ -43,7 +49,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         if (mData == null) {
             return 0;
         }
-        return mData.length;
+        return mData.size();
     }
 
     class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
