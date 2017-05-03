@@ -87,7 +87,33 @@ public class WeatherContentProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(@NonNull final Uri uri, @NonNull final ContentValues[] values) {
-        return super.bulkInsert(uri, values);
+        final int matcher = mUriMatcher.match(uri);
+        final SQLiteDatabase db = mWeatherDbHelper.getWritableDatabase();
+        int insertedItemsCount = 0;
+        switch (matcher) {
+            case CODE_WEATHER:
+                db.beginTransaction();
+                try {
+                    for (final ContentValues value : values) {
+                        final long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
+                                null,
+                                value);
+                        if (id != -1) {
+                            insertedItemsCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Wrong uri");
+        }
+        if (insertedItemsCount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return insertedItemsCount;
     }
 
     @Override
@@ -95,7 +121,7 @@ public class WeatherContentProvider extends ContentProvider {
                       @Nullable final String[] selectionArgs) {
         final int matcher = mUriMatcher.match(uri);
         final SQLiteDatabase db = mWeatherDbHelper.getWritableDatabase();
-        int deletedRows;
+        final int deletedRows;
         switch (matcher) {
             case CODE_WEATHER:
                 deletedRows = db.delete(WeatherContract.WeatherEntry.TABLE_NAME,
