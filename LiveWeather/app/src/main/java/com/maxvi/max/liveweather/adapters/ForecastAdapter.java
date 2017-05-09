@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.data.FakeData;
 import com.maxvi.max.liveweather.models.Forecast;
+import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.DateUtils;
+import com.maxvi.max.liveweather.utilities.WeatherUtils;
 
 import java.util.List;
 
@@ -47,15 +49,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         holder.dateTextView.setText(DateUtils.getDate(date));
 
         final int description = mData.get(position).getDescription();
-        holder.descriptionTextView.setText(String.valueOf(description));
+        holder.descriptionTextView.setText(WeatherUtils.getStringForWeatherCondition(mContext, description));
 
         final double maxTemp = mData.get(position).getTempMax();
-        holder.maxTempTextView.setText(String.valueOf(maxTemp));
+        holder.maxTempTextView.setText(Convertation.fromKelvinToCelsius(maxTemp) + "\u00b0");
 
-        final double minTemp = mData.get(position).getTempMin();
-        holder.minTempTextView.setText(String.valueOf(minTemp));
+        /*final double minTemp = mData.get(position).getTempMin();
+        holder.minTempTextView.setText(Convertation.fromKelvinToCelsius(minTemp));*/
 
-        holder.weatherImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.art_clear));
+        holder.weatherImageView.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(
+                mData.get(position).getDescription()
+        ));
     }
 
     @Override

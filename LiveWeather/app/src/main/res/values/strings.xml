@@ -81,4 +81,5 @@
     <string name="condition_960">Storm</string>
     <string name="condition_961">Violent Storm</string>
     <string name="condition_962">Hurricane</string>
+    <string name="condition_unknown">Unknown condition</string>
 </resources>

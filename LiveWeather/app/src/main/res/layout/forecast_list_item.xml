@@ -53,6 +53,6 @@
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintRight_toLeftOf="@id/tv_item_min_temp"
         app:layout_constraintTop_toBottomOf="@id/guideline"
-        tools:text="+22\u00b0"
-        />
+        tools:text="+22\u00b0"/>
+
 </android.support.constraint.ConstraintLayout>

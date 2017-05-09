@@ -2,14 +2,14 @@ package com.maxvi.max.liveweather.utilities;
 
 public final class Convertation {
 
-    private static final double KELVIN = 273.5;
+    private static final int KELVIN = 273;
 
     public static String fromKelvinToCelsius(final double temp) {
+        int a = (int) Math.round(temp);
+        final int celsius = a - KELVIN;
 
-        final double celsius = temp - KELVIN;
 
-
-        return String.valueOf(celsius + "&#8451");
+        return String.valueOf(celsius);
     }
 
     public static String fromKelvinToFahrenheit(final String temp) {
