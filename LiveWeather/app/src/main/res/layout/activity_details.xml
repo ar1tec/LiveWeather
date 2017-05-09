@@ -10,6 +10,7 @@
         android:id="@+id/tv_weather_data"
         android:padding="16dp"
         android:text="Weather data"
+        android:textColor="@color/colorSecondaryText"
         android:textSize="22sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

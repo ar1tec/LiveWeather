@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.data.FakeData;
 import com.maxvi.max.liveweather.models.Forecast;
+import com.maxvi.max.liveweather.utilities.DateUtils;
 
 import java.util.List;
 
@@ -41,7 +43,19 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(final ForecastViewHolder holder, final int position) {
-        holder.forecastTextView.setText(mData.get(position).toString());
+        final long date = mData.get(position).getDate();
+        holder.dateTextView.setText(DateUtils.getDate(date));
+
+        final int description = mData.get(position).getDescription();
+        holder.descriptionTextView.setText(String.valueOf(description));
+
+        final double maxTemp = mData.get(position).getTempMax();
+        holder.maxTempTextView.setText(String.valueOf(maxTemp));
+
+        final double minTemp = mData.get(position).getTempMin();
+        holder.minTempTextView.setText(String.valueOf(minTemp));
+
+        holder.weatherImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.art_clear));
     }
 
     @Override
@@ -54,17 +68,27 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView forecastTextView;
+        TextView dateTextView;
+        TextView descriptionTextView;
+        TextView maxTempTextView;
+        TextView minTempTextView;
+        ImageView weatherImageView;
 
         ForecastViewHolder(final View itemView) {
             super(itemView);
-            forecastTextView = (TextView) itemView.findViewById(R.id.tv_list_item);
+
+            dateTextView = (TextView) itemView.findViewById(R.id.tv_item_date);
+            descriptionTextView = (TextView) itemView.findViewById(R.id.tv_item_description);
+            maxTempTextView = (TextView) itemView.findViewById(R.id.tv_item_max_temp);
+            minTempTextView = (TextView) itemView.findViewById(R.id.tv_item_min_temp);
+            weatherImageView = (ImageView) itemView.findViewById(R.id.iv_weather_image);
+
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            mForecastOnClickListener.onClick(forecastTextView.getText().toString());
+
         }
     }
 }

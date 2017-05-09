@@ -92,8 +92,8 @@ public class WeatherContentProvider extends ContentProvider {
         int insertedItemsCount = 0;
         switch (matcher) {
             case CODE_WEATHER:
-                db.beginTransaction();
                 try {
+                    db.beginTransaction();
                     for (final ContentValues value : values) {
                         final long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
                                 null,
