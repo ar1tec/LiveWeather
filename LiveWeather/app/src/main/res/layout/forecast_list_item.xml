@@ -23,19 +23,20 @@
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintRight_toRightOf="parent"
         tools:src="@drawable/art_clear"/>
 
     <TextView
         android:id="@+id/tv_item_date"
         style="@style/ListItemDateAndDescription"
         app:layout_constraintBottom_toTopOf="@id/guideline"
-        app:layout_constraintLeft_toRightOf="@id/iv_weather_image"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:text="Today, May 9"/>
 
     <TextView
         android:id="@+id/tv_item_description"
         style="@style/ListItemDateAndDescription"
-        app:layout_constraintLeft_toRightOf="@id/iv_weather_image"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         tools:text="Clear"/>
 

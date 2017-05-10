@@ -11,16 +11,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
 import com.maxvi.max.liveweather.models.Forecast;
+import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.NetworkUtils;
 import com.maxvi.max.liveweather.utilities.ParsingUtils;
+import com.maxvi.max.liveweather.utilities.WeatherUtils;
 
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,6 +60,13 @@ public class MainActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
+        disableActionBarShadow();
+    }
+
+    private void disableActionBarShadow() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setElevation(0);
+        }
     }
 
     private void setupRecyclerView() {
@@ -112,6 +123,22 @@ public class MainActivity extends AppCompatActivity
             forecastList = ParsingUtils.parseJson(data);
 
             if (forecastList != null) {
+
+                //TODO make it right
+                TextView location = (TextView) findViewById(R.id.now_location);
+                TextView description = (TextView) findViewById(R.id.now_description);
+                TextView temp = (TextView) findViewById(R.id.now_temp);
+                ImageView weatherImage = (ImageView) findViewById(R.id.now_image_weather);
+
+                location.setText("Hrodna");
+                description.setText(WeatherUtils.getStringForWeatherCondition(
+                        this, forecastList.get(0).getDescription()
+                        ));
+                temp.setText(Convertation.fromKelvinToCelsius(forecastList.get(0).getTempMax())
+                        + "\u00b0");
+                weatherImage.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(
+                        forecastList.get(0).getDescription()));
+
                 mForecastAdapter.setData(forecastList);
                 mForecastAdapter.notifyDataSetChanged();
             } else {
