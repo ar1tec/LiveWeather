@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/horizontal_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        tools:text="3PM"/>
+
+    <ImageView
+        android:id="@+id/horizontal_weather_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintLeft_toLeftOf="@id/horizontal_time"
+        app:layout_constraintRight_toRightOf="@id/horizontal_time"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_time"
+        tools:src="@drawable/art_clear"/>
+
+    <TextView
+        android:id="@+id/horizontal_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="6dp"
+        android:textSize="16sp"
+        tools:text="22\u00b0"/>
+
+</LinearLayout>

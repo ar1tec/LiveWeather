@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LiveWeather</string>
+    <string name="app_name">Live Weather</string>
     <string name="activity_name_details">Details</string>
     <string name="key_extra_weather_day_data" translatable="false">key_weather_data</string>
     <string name="title_settings">Settings</string>

@@ -53,4 +53,24 @@ public final class DateUtils {
 
         return day;
     }
+
+    public static String getHour(final long timeStamp) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp * MULTIPLIER);
+
+        final int amPm = calendar.get(Calendar.AM_PM);
+        final String noon;
+        if (amPm == 1) {
+            noon = "PM";
+        } else {
+            noon = "AM";
+        }
+        int hour = calendar.get(Calendar.HOUR);
+        if (hour == 0) {
+            hour = 12;
+        }
+
+        String time = hour + noon;
+        return time;
+    }
 }

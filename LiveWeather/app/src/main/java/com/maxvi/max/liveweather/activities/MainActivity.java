@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
+import com.maxvi.max.liveweather.adapters.HorizontalForecastAdapter;
 import com.maxvi.max.liveweather.models.Forecast;
+import com.maxvi.max.liveweather.models.ForecastList;
 import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.NetworkUtils;
 import com.maxvi.max.liveweather.utilities.ParsingUtils;
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
+    private RecyclerView mHorizontalRecyclerView;
     private ForecastAdapter mForecastAdapter;
+    private HorizontalForecastAdapter mHorizontalForecastAdapter;
     private static final int LOADER_ID = 22;
     private ProgressBar mProgressBar;
     private TextView mErrorTextView;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
 
         setupRecyclerView();
+        setupHorizontalRecyclerView();
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
@@ -71,12 +76,14 @@ public class MainActivity extends AppCompatActivity
 
     private void setupRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_forecast);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-
         mForecastAdapter = new ForecastAdapter(this, this);
         mRecyclerView.setAdapter(mForecastAdapter);
+    }
+
+    private void setupHorizontalRecyclerView() {
+        mHorizontalRecyclerView = (RecyclerView) findViewById(R.id.rv_horizontal_forecast);
+        mHorizontalForecastAdapter = new HorizontalForecastAdapter();
+        mHorizontalRecyclerView.setAdapter(mHorizontalForecastAdapter);
     }
 
     @Override
@@ -140,6 +147,8 @@ public class MainActivity extends AppCompatActivity
                         forecastList.get(0).getDescription()));
 
                 mForecastAdapter.setData(forecastList);
+                mHorizontalForecastAdapter.setData(forecastList);
+                mHorizontalForecastAdapter.notifyDataSetChanged();
                 mForecastAdapter.notifyDataSetChanged();
             } else {
                 showErrorMessage();

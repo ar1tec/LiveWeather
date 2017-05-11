@@ -211,5 +211,4 @@ public final class WeatherUtils {
         return R.drawable.art_storm;
     }
 
-
 }
