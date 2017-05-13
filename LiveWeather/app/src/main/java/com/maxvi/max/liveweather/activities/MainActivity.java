@@ -1,13 +1,14 @@
 package com.maxvi.max.liveweather.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +19,15 @@ import android.widget.TextView;
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
 import com.maxvi.max.liveweather.adapters.HorizontalForecastAdapter;
+import com.maxvi.max.liveweather.contracts.WeatherContract;
+import com.maxvi.max.liveweather.data.ReloadDataTask;
 import com.maxvi.max.liveweather.models.Forecast;
-import com.maxvi.max.liveweather.models.ForecastList;
 import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.NetworkUtils;
 import com.maxvi.max.liveweather.utilities.ParsingUtils;
 import com.maxvi.max.liveweather.utilities.WeatherUtils;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,17 +67,19 @@ public class MainActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         disableActionBarShadow();
+
     }
 
     private void disableActionBarShadow() {
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setElevation(0);
+            getSupportActionBar().setElevation(0f);
         }
     }
 
     private void setupRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_forecast);
         mForecastAdapter = new ForecastAdapter(this, this);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mForecastAdapter);
     }
 
@@ -128,8 +131,8 @@ public class MainActivity extends AppCompatActivity
         final List<Forecast> forecastList;
         try {
             forecastList = ParsingUtils.parseJson(data);
-
             if (forecastList != null) {
+
 
                 //TODO make it right
                 TextView location = (TextView) findViewById(R.id.now_location);

@@ -73,4 +73,34 @@ public final class DateUtils {
         String time = hour + noon;
         return time;
     }
+
+    public static boolean isThreePM(final long timeStamp) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp * MULTIPLIER);
+        final int amPm = calendar.get(Calendar.AM_PM);
+        if (amPm != 1) {
+            return false;
+        }
+        final int hour = calendar.get(Calendar.HOUR);
+        if (hour == 3) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isSixAM(final long timeStamp) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp * MULTIPLIER);
+        final int amPm = calendar.get(Calendar.AM_PM);
+        if (amPm != 0) {
+            return false;
+        }
+        final int hour = calendar.get(Calendar.HOUR);
+        if (hour == 6) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
