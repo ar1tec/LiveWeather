@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <include layout="@layout/fragment_toolbar"/>
+
         <include
             android:id="@+id/view_now"
             layout="@layout/forecast_item_now"

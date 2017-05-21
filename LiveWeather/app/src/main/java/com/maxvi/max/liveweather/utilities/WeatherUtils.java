@@ -1,8 +1,11 @@
 package com.maxvi.max.liveweather.utilities;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.maxvi.max.liveweather.R;
+
+import java.util.Calendar;
 
 public final class WeatherUtils {
 
@@ -209,6 +212,57 @@ public final class WeatherUtils {
             return R.drawable.art_clear;
         }
         return R.drawable.art_storm;
+    }
+
+    public static int getWeatherImageResource(final int weatherId, final int timeStamp) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp * 1000L);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (weatherId >= 200 && weatherId <= 232) {
+            return R.drawable.art_storm;
+        } else if (weatherId >= 300 && weatherId <= 321) {
+            return R.drawable.art_light_rain;
+        } else if (weatherId >= 500 && weatherId <= 504) {
+            return R.drawable.art_rain;
+        } else if (weatherId == 511) {
+            return R.drawable.art_snow;
+        } else if (weatherId >= 520 && weatherId <= 531) {
+            return R.drawable.art_rain;
+        } else if (weatherId >= 600 && weatherId <= 622) {
+            return R.drawable.art_snow;
+        } else if (weatherId >= 701 && weatherId <= 761) {
+            return R.drawable.art_fog;
+        } else if (weatherId == 761 || weatherId == 771 || weatherId == 781) {
+            return R.drawable.art_storm;
+        } else if (weatherId == 800) {
+            Log.d("WeatherUtils", "getWeatherImageResource: hour " + hour);
+            if (checkIfNight(hour)) {
+                return R.mipmap.art_moon_clear;
+            } else {
+                return R.drawable.art_clear;
+            }
+        } else if (weatherId == 801) {
+            return R.drawable.art_light_clouds;
+        } else if (weatherId >= 802 && weatherId <= 804) {
+            if (checkIfNight(hour)) {
+                return R.mipmap.art_moon_cloudy;
+            }
+            return R.drawable.art_clouds;
+        } else if (weatherId >= 900 && weatherId <= 906) {
+            return R.drawable.art_storm;
+        } else if (weatherId >= 958 && weatherId <= 962) {
+            return R.drawable.art_storm;
+        } else if (weatherId >= 951 && weatherId <= 957) {
+            return R.drawable.art_clear;
+        }
+        return R.drawable.art_storm;
+    }
+
+    private static boolean checkIfNight(final int hour) {
+        if (hour >= 0 && hour <= 6) {
+            return true;
+        }
+        return false;
     }
 
 }

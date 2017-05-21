@@ -24,6 +24,7 @@ public final class Convertation {
         } catch (final Exception pE) {
             pE.printStackTrace();
         }
+
         return Double.parseDouble(null);
     }
 
