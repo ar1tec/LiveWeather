@@ -1,6 +1,8 @@
 package com.maxvi.max.liveweather.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maxvi.max.liveweather.R;
+import com.maxvi.max.liveweather.activities.MainActivity;
+import com.maxvi.max.liveweather.contracts.WeatherContract;
 import com.maxvi.max.liveweather.data.FakeData;
 import com.maxvi.max.liveweather.models.Forecast;
 import com.maxvi.max.liveweather.utilities.Convertation;
@@ -23,11 +28,23 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     private final Context mContext;
     private List<Forecast> mData;
     private final ForecastOnClickListener mForecastOnClickListener;
+    private Cursor mCursor;
+    private String TAG = this.getClass().getSimpleName();
 
-    public ForecastAdapter(final Context pContext,
-                           final ForecastOnClickListener pForecastOnClickListener) {
+    public ForecastAdapter(@NonNull final Context pContext,
+                           final ForecastOnClickListener pForecastOnClickListener,
+                           final Cursor pCursor) {
         mContext = pContext;
         mForecastOnClickListener = pForecastOnClickListener;
+        mCursor = pCursor;
+    }
+
+    public void swapCursor(final Cursor pCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+        mCursor = pCursor;
+        notifyDataSetChanged();
     }
 
     public void setData(final List<Forecast> pData) {
@@ -46,29 +63,27 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(final ForecastViewHolder holder, final int position) {
-        final long date = mData.get(position).getDate();
-        holder.dateTextView.setText(DateUtils.getDate(date));
+        Log.d(TAG, "onBindViewHolder: position " + position);
+        mCursor.moveToPosition(position);
+        Log.d(TAG, "onBindViewHolder: " + mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.DATE)));
+        final int date = mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.DATE));
+        final String sDate = DateUtils.getDate(date);
+        holder.dateTextView.setText(sDate);
 
-        final int description = mData.get(position).getDescription();
-        holder.descriptionTextView.setText(WeatherUtils.getStringForWeatherCondition(mContext, description));
+        final int weatherId = mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.WEATHER_ID));
+        holder.weatherImageView.setImageResource(WeatherUtils.getWeatherImageResource(weatherId, date));
+        holder.descriptionTextView.setText(WeatherUtils.getStringForWeatherCondition(mContext, weatherId));
 
-        final double maxTemp = mData.get(position).getTempMax();
+        final double maxTemp = mCursor.getDouble(mCursor.getColumnIndex(WeatherContract.WeatherEntry.TEMP_MAX));
         holder.maxTempTextView.setText(Convertation.fromKelvinToCelsius(maxTemp) + "\u00b0");
-
-        /*final double minTemp = mData.get(position).getTempMin();
-        holder.minTempTextView.setText(Convertation.fromKelvinToCelsius(minTemp));*/
-
-        holder.weatherImageView.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(
-                mData.get(position).getDescription()
-        ));
     }
 
     @Override
     public int getItemCount() {
-        if (mData == null) {
+        if (mCursor == null) {
             return 0;
         }
-        return mData.size();
+        return mCursor.getCount();
     }
 
     class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -92,8 +107,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         }
 
         @Override
-        public void onClick(View v) {
-
+        public void onClick(final View v) {
+            mForecastOnClickListener.onClick(maxTempTextView.getText().toString());
         }
     }
 }

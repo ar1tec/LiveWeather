@@ -23,7 +23,7 @@ public class WeatherContentProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(WeatherContract.AUTHORITY, WeatherContract.PATH_WEATHER, CODE_WEATHER);
-        uriMatcher.addURI(WeatherContract.AUTHORITY, WeatherContract.PATH_WEATHER + "/#",
+        uriMatcher.addURI(WeatherContract.AUTHORITY, WeatherContract.PATH_WEATHER + "/#/#",
                 CODE_WEATHER_WITH_DATE);
         return uriMatcher;
     }
@@ -52,6 +52,8 @@ public class WeatherContentProvider extends ContentProvider {
                         WeatherContract.WeatherEntry.DATE
                 );
             case CODE_WEATHER_WITH_DATE:
+
+
                 break;
             default:
                 throw new UnsupportedOperationException("Wrong uri");
