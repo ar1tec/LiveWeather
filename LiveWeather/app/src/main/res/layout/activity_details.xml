@@ -91,55 +91,55 @@
             android:id="@+id/details_humidity"
             style="@style/DetailsAdditionalInfo"
             app:layout_constraintBottom_toTopOf="@+id/details_pressure"
-            app:layout_constraintLeft_toLeftOf="@id/details_additional_info"
-            app:layout_constraintRight_toLeftOf="@id/details_additional_guideline"
-            app:layout_constraintTop_toTopOf="@id/details_additional_info"
+            app:layout_constraintLeft_toLeftOf="@+id/details_additional_info"
+            app:layout_constraintRight_toLeftOf="@+id/details_additional_guideline"
+            app:layout_constraintTop_toTopOf="@+id/details_additional_info"
             tools:text="Humidity"/>
 
         <TextView
-            android:id="@id/details_pressure"
+            android:id="@+id/details_pressure"
             style="@style/DetailsAdditionalInfo"
             app:layout_constraintBottom_toBottomOf="@+id/details_wind"
-            app:layout_constraintLeft_toLeftOf="@id/details_additional_info"
-            app:layout_constraintRight_toRightOf="@id/details_additional_guideline"
-            app:layout_constraintTop_toBottomOf="@id/details_humidity"
+            app:layout_constraintLeft_toLeftOf="@+id/details_additional_info"
+            app:layout_constraintRight_toRightOf="@+id/details_additional_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/details_humidity"
             tools:text="Pressure"/>
 
         <TextView
-            android:id="@id/details_wind"
+            android:id="@+id/details_wind"
             style="@style/DetailsAdditionalInfo"
-            app:layout_constraintBottom_toBottomOf="@id/details_additional_info"
-            app:layout_constraintLeft_toLeftOf="@id/details_additional_info"
-            app:layout_constraintRight_toLeftOf="@id/details_additional_guideline"
-            app:layout_constraintTop_toBottomOf="@id/details_pressure"
+            app:layout_constraintBottom_toBottomOf="@+id/details_additional_info"
+            app:layout_constraintLeft_toLeftOf="@+id/details_additional_info"
+            app:layout_constraintRight_toLeftOf="@+id/details_additional_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/details_pressure"
             tools:text="Wind"/>
 
         <TextView
             android:id="@+id/details_humidity_value"
             style="@style/DetailsAdditionalInfo"
-            app:layout_constraintBottom_toBottomOf="@id/details_humidity"
-            app:layout_constraintLeft_toRightOf="@id/details_additional_guideline"
-            app:layout_constraintRight_toRightOf="@id/details_additional_info"
-            app:layout_constraintTop_toTopOf="@id/details_humidity"
+            app:layout_constraintBottom_toBottomOf="@+id/details_humidity"
+            app:layout_constraintLeft_toRightOf="@+id/details_additional_guideline"
+            app:layout_constraintRight_toRightOf="@+id/details_additional_info"
+            app:layout_constraintTop_toTopOf="@+id/details_humidity"
             tools:text="90%"/>
 
         <TextView
             android:id="@+id/details_pressure_value"
             style="@style/DetailsAdditionalInfo"
             app:layout_constraintBottom_toBottomOf="@id/details_pressure"
-            app:layout_constraintLeft_toRightOf="@id/details_additional_guideline"
-            app:layout_constraintRight_toRightOf="@id/details_additional_info"
-            app:layout_constraintTop_toTopOf="@id/details_pressure"
+            app:layout_constraintLeft_toRightOf="@+id/details_additional_guideline"
+            app:layout_constraintRight_toRightOf="@+id/details_additional_info"
+            app:layout_constraintTop_toTopOf="@+id/details_pressure"
             tools:text="760 mmHg"
             />
 
         <TextView
             android:id="@+id/details_wind_value"
             style="@style/DetailsAdditionalInfo"
-            app:layout_constraintBottom_toBottomOf="@id/details_wind"
-            app:layout_constraintLeft_toRightOf="@id/details_additional_guideline"
-            app:layout_constraintRight_toRightOf="@id/details_additional_info"
-            app:layout_constraintTop_toTopOf="@id/details_wind"
+            app:layout_constraintBottom_toBottomOf="@+id/details_wind"
+            app:layout_constraintLeft_toRightOf="@+id/details_additional_guideline"
+            app:layout_constraintRight_toRightOf="@+id/details_additional_info"
+            app:layout_constraintTop_toTopOf="@+id/details_wind"
             tools:text="10 m/s NE"
             />
 
