@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.contracts.WeatherContract;
+import com.maxvi.max.liveweather.models.DayForecast;
 import com.maxvi.max.liveweather.models.Forecast;
 import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.DateUtils;
@@ -41,7 +42,7 @@ public class HorizontalForecastAdapter extends RecyclerView.Adapter<HorizontalFo
         );
         final int weatherId = mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.WEATHER_ID));
         Log.d("HorizontalRV", "onBindViewHolder: " + position + "  " + time);
-        holder.mTemp.setText(temp + "\u00b0");
+        holder.mTemp.setText(temp);
         holder.mTime.setText(time);
         holder.mWeatherImage.setImageResource(WeatherUtils.getWeatherImageResource(weatherId, unixTime));
     }
@@ -54,13 +55,14 @@ public class HorizontalForecastAdapter extends RecyclerView.Adapter<HorizontalFo
         return mCursor.getCount();
     }
 
-    public void swapCursor(Cursor pCursor) {
+    public void swapCursor(final Cursor pCursor) {
         if (mCursor != null) {
             mCursor.close();
         }
         mCursor = pCursor;
         notifyDataSetChanged();
     }
+
 
     class HorizontalViewHolder extends RecyclerView.ViewHolder {
 

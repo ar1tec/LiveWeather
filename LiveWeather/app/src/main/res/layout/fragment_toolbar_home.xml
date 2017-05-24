@@ -5,36 +5,31 @@
               android:layout_height="56dp"
               android:background="@color/colorPrimary"
               android:orientation="horizontal">
+    <ImageButton
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:id="@+id/home_btn_back"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:srcCompat="@drawable/ic_arrow_back_white_24dp"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
         android:layout_weight="1"
         android:gravity="center|start"
         android:text="@string/app_name"
         android:textColor="@android:color/white"
         android:textSize="17sp"/>
 
-    <Button
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onRefreshClick"
-        android:text="REFRESH"
-        android:textColor="@android:color/white"/>
-
     <ImageButton
         android:clickable="true"
         android:focusable="true"
         android:background="?android:attr/selectableItemBackground"
-        android:id="@+id/btn_menu"
+        android:id="@+id/home_btn_menu"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:padding="16dp"
         app:srcCompat="@drawable/ic_more_vert_white_24dp"/>
-
 </LinearLayout>

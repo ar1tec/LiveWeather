@@ -9,6 +9,30 @@ import java.util.Calendar;
 
 public final class WeatherUtils {
 
+    public static String getFormattedWind(final double windSpeed, final double degrees) {
+        //TODO implement km/h m/s
+
+        String direction = "Unknown";
+        if (degrees >= 337.5 || degrees < 22.5) {
+            direction = "N";
+        } else if (degrees >= 22.5 && degrees < 67.5) {
+            direction = "NE";
+        } else if (degrees >= 67.5 && degrees < 112.5) {
+            direction = "E";
+        } else if (degrees >= 112.5 && degrees < 157.5) {
+            direction = "SE";
+        } else if (degrees >= 157.5 && degrees < 202.5) {
+            direction = "S";
+        } else if (degrees >= 202.5 && degrees < 247.5) {
+            direction = "SW";
+        } else if (degrees >= 247.5 && degrees < 292.5) {
+            direction = "W";
+        } else if (degrees >= 292.5 && degrees < 337.5) {
+            direction = "NW";
+        }
+        return windSpeed + " m/s " + direction;
+    }
+
     public static String getStringForWeatherCondition(final Context context, final int weatherId) {
         final int stringId;
         if (weatherId >= 200 && weatherId <= 232) {
@@ -214,7 +238,7 @@ public final class WeatherUtils {
         return R.drawable.art_storm;
     }
 
-    public static int getWeatherImageResource(final int weatherId, final int timeStamp) {
+    public static int getWeatherImageResource(final int weatherId,  final int timeStamp) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeStamp * 1000L);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

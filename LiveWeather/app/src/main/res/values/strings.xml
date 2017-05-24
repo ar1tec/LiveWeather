@@ -82,4 +82,17 @@
     <string name="condition_961">Violent Storm</string>
     <string name="condition_962">Hurricane</string>
     <string name="condition_unknown">Unknown condition</string>
+    <string name="humidity_label">Humidity</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="wind_label">Wind</string>
+    <string name="key_weather_id">KEY_WEATHER_ID</string>
+    <string name="key_max_temp">KEY_MAX_TEMP</string>
+    <string name="key_min_temp">KEY_MIN_TEMP</string>
+    <string name="key_humidity">KEY_HUMIDITY</string>
+    <string name="key_pressure">KEY_PRESSURE</string>
+    <string name="key_wind_speed">KEY_WIND_SPEED</string>
+    <string name="key_wind_degrees">KEY_WIND_DEGREES</string>
+    <string name="choose_preffered_units">Choose preffered units</string>
+    <string name="unit_celsius">Celsius</string>
+    <string name="unit_fahrenheit">Fahrenheit</string>
 </resources>

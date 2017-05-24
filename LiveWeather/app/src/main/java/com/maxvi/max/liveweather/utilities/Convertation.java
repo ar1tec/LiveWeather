@@ -5,11 +5,11 @@ public final class Convertation {
     private static final int KELVIN = 273;
 
     public static String fromKelvinToCelsius(final double temp) {
-        int a = (int) Math.round(temp);
+        final int a = (int) Math.round(temp);
         final int celsius = a - KELVIN;
 
 
-        return String.valueOf(celsius);
+        return celsius + "\u00b0";
     }
 
     public static String fromKelvinToFahrenheit(final String temp) {

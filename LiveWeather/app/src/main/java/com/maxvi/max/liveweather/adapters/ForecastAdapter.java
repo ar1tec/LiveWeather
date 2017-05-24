@@ -2,6 +2,7 @@ package com.maxvi.max.liveweather.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,20 +17,23 @@ import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.activities.MainActivity;
 import com.maxvi.max.liveweather.contracts.WeatherContract;
 import com.maxvi.max.liveweather.data.FakeData;
+import com.maxvi.max.liveweather.models.DayForecast;
 import com.maxvi.max.liveweather.models.Forecast;
 import com.maxvi.max.liveweather.utilities.Convertation;
 import com.maxvi.max.liveweather.utilities.DateUtils;
 import com.maxvi.max.liveweather.utilities.WeatherUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
     private final Context mContext;
-    private List<Forecast> mData;
+    private List<DayForecast> mDayForecastList = new ArrayList<>();
     private final ForecastOnClickListener mForecastOnClickListener;
     private Cursor mCursor;
-    private String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 
     public ForecastAdapter(@NonNull final Context pContext,
                            final ForecastOnClickListener pForecastOnClickListener,
@@ -47,12 +51,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         notifyDataSetChanged();
     }
 
-    public void setData(final List<Forecast> pData) {
-        mData = pData;
+    public void swapList(final Collection<DayForecast> pDayForecastList) {
+        mDayForecastList.clear();
+        mDayForecastList.addAll(pDayForecastList);
+        notifyDataSetChanged();
     }
 
     public interface ForecastOnClickListener {
-        void onClick(String weatherData);
+        void onClick(Bundle weatherData);
     }
 
     @Override
@@ -63,27 +69,24 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(final ForecastViewHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder: position " + position);
-        mCursor.moveToPosition(position);
-        Log.d(TAG, "onBindViewHolder: " + mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.DATE)));
-        final int date = mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.DATE));
-        final String sDate = DateUtils.getDate(date);
-        holder.dateTextView.setText(sDate);
+        final String day = DateUtils.getDay(mDayForecastList.get(position).getTimestamp());
+        holder.dateTextView.setText(day);
 
-        final int weatherId = mCursor.getInt(mCursor.getColumnIndex(WeatherContract.WeatherEntry.WEATHER_ID));
-        holder.weatherImageView.setImageResource(WeatherUtils.getWeatherImageResource(weatherId, date));
-        holder.descriptionTextView.setText(WeatherUtils.getStringForWeatherCondition(mContext, weatherId));
+        final int weatherId = mDayForecastList.get(position).getDescription();
+        final String description = WeatherUtils.getStringForWeatherCondition(mContext, weatherId);
+        holder.descriptionTextView.setText(description);
+        holder.weatherImageView.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherId));
 
-        final double maxTemp = mCursor.getDouble(mCursor.getColumnIndex(WeatherContract.WeatherEntry.TEMP_MAX));
-        holder.maxTempTextView.setText(Convertation.fromKelvinToCelsius(maxTemp) + "\u00b0");
+        final String maxTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMaxTemp());
+        final String minTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMinTemp());
+        holder.minTempTextView.setText(minTemp);
+        holder.maxTempTextView.setText(maxTemp);
+
     }
 
     @Override
     public int getItemCount() {
-        if (mCursor == null) {
-            return 0;
-        }
-        return mCursor.getCount();
+        return mDayForecastList.size();
     }
 
     class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -108,7 +111,45 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(final View v) {
-            mForecastOnClickListener.onClick(maxTempTextView.getText().toString());
+            final int position = getAdapterPosition();
+            final Bundle bundle = new Bundle();
+
+            final int weatherId = mDayForecastList.get(position).getDescription();
+            bundle.putInt(mContext.getString(R.string.key_weather_id), weatherId);
+
+            final String maxTemp = maxTempTextView.getText().toString();
+            final String minTemp = minTempTextView.getText().toString();
+            bundle.putString(mContext.getString(R.string.key_max_temp), maxTemp);
+            bundle.putString(mContext.getString(R.string.key_min_temp), minTemp);
+
+            final int humidity = mDayForecastList.get(position).getHumidity();
+            bundle.putInt(mContext.getString(R.string.key_humidity), humidity);
+
+            final double pressure = mDayForecastList.get(position).getPressure();
+            bundle.putDouble(mContext.getString(R.string.key_pressure), pressure);
+
+            final double windSpeed = mDayForecastList.get(position).getWindSpeed();
+            bundle.putDouble(mContext.getString(R.string.key_wind_speed), windSpeed);
+
+            final double windDegrees = mDayForecastList.get(position).getWindDegrees();
+            bundle.putDouble(mContext.getString(R.string.key_wind_degrees), windDegrees);
+
+            mForecastOnClickListener.onClick(bundle);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

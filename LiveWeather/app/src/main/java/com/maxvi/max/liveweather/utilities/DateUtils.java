@@ -6,11 +6,11 @@ public final class DateUtils {
 
     private static final long MULTIPLIER = 1000L;
 
-    public static String getDate(final long timeStamp) {
+    public static String getDay(final long timeStamp) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeStamp * MULTIPLIER);
 
-        String day;
+        final String day;
         switch (calendar.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.SUNDAY:
                 day = "Sunday";
@@ -35,22 +35,8 @@ public final class DateUtils {
                 break;
             default:
                 day = "Unknown";
+                break;
         }
-
-        final int amPm = calendar.get(Calendar.AM_PM);
-        final String noon;
-        if (amPm == 1) {
-            noon = "PM";
-        } else {
-            noon = "AM";
-        }
-        int hour = calendar.get(Calendar.HOUR);
-        if (hour == 0) {
-            hour = 12;
-        }
-
-        day += " " + hour + " " + noon;
-
         return day;
     }
 
@@ -77,12 +63,8 @@ public final class DateUtils {
     public static boolean isThreePM(final long timeStamp) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeStamp * MULTIPLIER);
-        final int amPm = calendar.get(Calendar.AM_PM);
-        if (amPm != 1) {
-            return false;
-        }
-        final int hour = calendar.get(Calendar.HOUR);
-        if (hour == 3) {
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour == 15) {
             return true;
         } else {
             return false;
@@ -92,11 +74,7 @@ public final class DateUtils {
     public static boolean isSixAM(final long timeStamp) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeStamp * MULTIPLIER);
-        final int amPm = calendar.get(Calendar.AM_PM);
-        if (amPm != 0) {
-            return false;
-        }
-        final int hour = calendar.get(Calendar.HOUR);
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         if (hour == 6) {
             return true;
         } else {
