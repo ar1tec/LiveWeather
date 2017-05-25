@@ -95,4 +95,8 @@
     <string name="choose_preffered_units">Choose preffered units</string>
     <string name="unit_celsius">Celsius</string>
     <string name="unit_fahrenheit">Fahrenheit</string>
+    <string name="choose_location">Choose location</string>
+    <string name="location_label">Location</string>
+    <string name="prefs_settings">prefs_settings</string>
+    <string name="pref_units">pref_units</string>
 </resources>
