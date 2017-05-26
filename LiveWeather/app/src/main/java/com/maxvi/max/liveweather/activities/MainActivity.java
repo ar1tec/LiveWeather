@@ -2,6 +2,7 @@ package com.maxvi.max.liveweather.activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,7 +37,9 @@ import org.json.JSONException;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>, ForecastAdapter.ForecastOnClickListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        ForecastAdapter.ForecastOnClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mProgressBar;
     private TextView mErrorTextView;
     private ImageButton mMenuButton;
+    private TextView mLocationTextView;
 
     public void onRefreshClick(final View view) {
         new FetchWeatherTask().execute();
@@ -59,6 +64,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences,
+                                          final String key) {
+        if (key.equals(getString(R.string.pref_location))) {
+            final String location = sharedPreferences.getString(getString(R.string.pref_location),
+                    getString(R.string.pref_location_default));
+            new FetchWeatherTask().execute();
+            mLocationTextView.setText(location);
+        }
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -66,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         mErrorTextView = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
         mMenuButton = (ImageButton) findViewById(R.id.btn_menu);
+        mLocationTextView = (TextView) findViewById(R.id.now_location);
 
         mMenuButton.setOnClickListener(new View.OnClickListener() {
 
@@ -95,15 +112,14 @@ public class MainActivity extends AppCompatActivity
         setupHorizontalRecyclerView();
 
         getSupportLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-
-        disableActionBarShadow();
-
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
-    private void disableActionBarShadow() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setElevation(0f);
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+
     }
 
     private void setupRecyclerView() {
@@ -148,7 +164,6 @@ public class MainActivity extends AppCompatActivity
             bindBlockNow(data);
         }
 
-
         mForecastAdapter.swapCursor(data);
         mForecastAdapter.swapList(DataBinding.makeDailyWeatherList(data));
         mHorizontalForecastAdapter.swapCursor(data);
@@ -156,12 +171,12 @@ public class MainActivity extends AppCompatActivity
         mProgressBar.setVisibility(View.GONE);
     }
 
-
-
     private void bindBlockNow(final Cursor data) {
         data.moveToFirst();
-        final TextView tvLocation = (TextView) findViewById(R.id.now_location);
-        tvLocation.setText("Hrodna");
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String location = preferences.getString(getString(R.string.pref_location),
+                getString(R.string.pref_location_default));
+        mLocationTextView.setText(location);
         final ImageView ivWeather = (ImageView) findViewById(R.id.now_image_weather);
         final int weatherId = data.getInt(data.getColumnIndex(WeatherContract.WeatherEntry.WEATHER_ID));
         ivWeather.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(
@@ -174,9 +189,6 @@ public class MainActivity extends AppCompatActivity
         final double temp = data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.TEMP_MAX));
         final TextView tvMaxTemp = (TextView) findViewById(R.id.now_temp);
         tvMaxTemp.setText(Convertation.fromKelvinToCelsius(temp));
-        View view = getLayoutInflater().inflate(R.layout.forecast_item_now, null);
-        TextView tv = (TextView) view.findViewById(R.id.now_temp);
-        Log.d(TAG, "bindBlockNow: LOOK AT THIS " + tv.getText());
     }
 
     private void showErrorMessage() {
@@ -189,14 +201,18 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     private class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(final Void... params) {
             final String result;
             try {
-                result = NetworkUtils.getResponseFromURL(NetworkUtils.buildUrl("Hrodna"));
+                final SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(MainActivity.this);
+                final String location = preferences.getString(getString(R.string.pref_location),
+                        getString(R.string.pref_location_default));
+                result = NetworkUtils.getResponseFromURL(NetworkUtils
+                        .buildUrl(location));
 
                 getContentResolver().delete(
                         WeatherContract.WeatherEntry.CONTENT_URI,

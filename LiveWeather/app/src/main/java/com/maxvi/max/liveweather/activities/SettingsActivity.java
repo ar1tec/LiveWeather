@@ -1,27 +1,25 @@
 package com.maxvi.max.liveweather.activities;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Checkable;
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maxvi.max.liveweather.R;
 
-import java.util.Set;
-
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ImageButton mBackButton;
     private TextView mUnitsHintTextView;
@@ -30,16 +28,45 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView mLocationHintTextView;
 
     @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        if (key.equals(getString(R.string.pref_location))) {
+            mLocationHintTextView.setText(
+                    sharedPreferences.getString(
+                            getString(R.string.pref_location), getString(R.string.pref_location_default)));
+        } else if (key.equals(getString(R.string.pref_units))) {
+            mUnitsHintTextView.setText(
+                    sharedPreferences.getString(
+                            getString(R.string.pref_units), getString(R.string.unit_celsius)));
+        }
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         findViews();
         setOnClickListeners();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        setupSharedPreferences(sharedPreferences);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
 
-        String unitsHint = sharedPreferences.getString(getString(R.string.pref_units), getString(R.string.unit_celsius));
+    private void setupSharedPreferences(final SharedPreferences pSharedPreferences) {
+        final String unitsHint = pSharedPreferences.getString(
+                getString(R.string.pref_units), getString(R.string.unit_celsius));
+        final String locationHint = pSharedPreferences.getString(
+                getString(R.string.pref_location), "Hrodna");
         mUnitsHintTextView.setText(unitsHint);
+        mLocationHintTextView.setText(locationHint);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void findViews() {
@@ -55,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
             mBackButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     onBackPressed();
                 }
             });
@@ -70,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity {
                     final View view = getLayoutInflater().inflate(R.layout.dialog_units, null);
 
                     final RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.dialog_radio_group);
-                    final Checkable celsuisRadioButton = (Checkable) view.findViewById(
+                    final Checkable celsiusRadioButton = (Checkable) view.findViewById(
                             R.id.dialog_rb_btn_celsius);
                     final Checkable fahrenheitRadioButton = (Checkable) view.findViewById(
                             R.id.dialog_rb_btn_fahrenheit);
@@ -81,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity {
                     final String checkedUnit = preferences.getString(getString(R.string.pref_units),
                             getString(R.string.unit_celsius));
                     if (checkedUnit.equals(getString(R.string.unit_celsius))) {
-                        celsuisRadioButton.setChecked(true);
+                        celsiusRadioButton.setChecked(true);
                     } else if (checkedUnit.equals(getString(R.string.unit_fahrenheit))) {
                         fahrenheitRadioButton.setChecked(true);
                     }
@@ -96,7 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
                             switch (checkedId) {
                                 case R.id.dialog_rb_btn_celsius:
                                     mUnitsHintTextView.setText(getString(R.string.unit_celsius));
-                                    celsuisRadioButton.setChecked(true);
+                                    celsiusRadioButton.setChecked(true);
                                     editor.putString(getString(R.string.pref_units),
                                             getString(R.string.unit_celsius));
                                     editor.apply();
@@ -127,13 +154,30 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onClick(final View v) {
                     final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
                     final View view = getLayoutInflater().inflate(R.layout.dialog_location, null);
+
+                    final EditText locationEditText = (EditText) view.findViewById(R.id.dialog_et_location);
+                    final SharedPreferences preferences = PreferenceManager
+                            .getDefaultSharedPreferences(SettingsActivity.this);
+                    final SharedPreferences.Editor editor = preferences.edit();
+
+                    locationEditText.setText(preferences.getString(
+                            getString(R.string.pref_location), "Hrodna"));
+
                     dialogBuilder.setTitle("Select location to display");
+                    dialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int which) {
+                            editor.putString(getString(R.string.pref_location),
+                                    locationEditText.getText().toString());
+                            editor.apply();
+                        }
+                    });
+                    dialogBuilder.setNegativeButton("Dismiss", null);
                     dialogBuilder.setView(view);
                     dialogBuilder.show();
                 }
             });
         }
-
     }
-
 }

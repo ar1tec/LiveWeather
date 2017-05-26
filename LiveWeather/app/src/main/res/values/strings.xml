@@ -99,4 +99,6 @@
     <string name="location_label">Location</string>
     <string name="prefs_settings">prefs_settings</string>
     <string name="pref_units">pref_units</string>
+    <string name="pref_location">pref_location</string>
+    <string name="pref_location_default">Hrodna</string>
 </resources>

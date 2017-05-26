@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:padding="22dp"
-              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:padding="22dp">
 
     <TextView
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="22sp"
-        android:text="@string/location_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/location_label"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="22sp"/>
 
     <EditText
-        android:layout_marginStart="22dp"
-        android:layout_marginLeft="22dp"
+        android:inputType="text|textNoSuggestions"
+        android:id="@+id/dialog_et_location"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"
+        android:textSize="22sp"/>
 
 </LinearLayout>
