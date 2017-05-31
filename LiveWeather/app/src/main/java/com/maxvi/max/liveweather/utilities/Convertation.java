@@ -2,30 +2,18 @@ package com.maxvi.max.liveweather.utilities;
 
 public final class Convertation {
 
-    private static final int KELVIN = 273;
+    private static final double PARAMETER_KELVIN_TO_CELS = 273.15;
+    private static final double PARAMETER_KELVIN_TO_FAHR = 459.67;
 
     public static String fromKelvinToCelsius(final double temp) {
-        final int a = (int) Math.round(temp);
-        final int celsius = a - KELVIN;
-
-
-        return celsius + "\u00b0";
+        double celsius = temp - PARAMETER_KELVIN_TO_CELS;
+        celsius = Math.round(celsius);
+        return (int) celsius + "\u00b0";
     }
 
-    public static String fromKelvinToFahrenheit(final String temp) {
-        return null;
+    public static String fromKelvinToFahrenheit(final double temp) {
+        double fahrenheitTemp = temp * 9 / 5 - PARAMETER_KELVIN_TO_FAHR;
+        fahrenheitTemp = Math.round(fahrenheitTemp);
+        return (int) fahrenheitTemp + "\u00b0";
     }
-
-    private static double parseStringToDouble(String temp) {
-        final double num;
-        try {
-            num = Double.parseDouble(temp);
-            return num;
-        } catch (final Exception pE) {
-            pE.printStackTrace();
-        }
-
-        return Double.parseDouble(null);
-    }
-
 }

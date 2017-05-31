@@ -1,9 +1,11 @@
 package com.maxvi.max.liveweather.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     private final ForecastOnClickListener mForecastOnClickListener;
     private Cursor mCursor;
     private final String TAG = this.getClass().getSimpleName();
+    private SharedPreferences mSharedPreferences;
 
     public ForecastAdapter(@NonNull final Context pContext,
                            final ForecastOnClickListener pForecastOnClickListener,
@@ -41,6 +44,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         mContext = pContext;
         mForecastOnClickListener = pForecastOnClickListener;
         mCursor = pCursor;
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
     public void swapCursor(final Cursor pCursor) {
@@ -58,6 +62,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     public interface ForecastOnClickListener {
+
         void onClick(Bundle weatherData);
     }
 
@@ -77,8 +82,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         holder.descriptionTextView.setText(description);
         holder.weatherImageView.setImageResource(WeatherUtils.getLargeArtResourceIdForWeatherCondition(weatherId));
 
-        final String maxTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMaxTemp());
-        final String minTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMinTemp());
+        final String preferenceKey = mSharedPreferences.getString(
+                mContext.getString(R.string.pref_units), mContext.getString(R.string.unit_celsius));
+        String maxTemp = null;
+        String minTemp = null;
+        if (preferenceKey.equals(mContext.getString(R.string.unit_celsius))) {
+            maxTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMaxTemp());
+            minTemp = Convertation.fromKelvinToCelsius(mDayForecastList.get(position).getMinTemp());
+        } else if (preferenceKey.equals(mContext.getString(R.string.unit_fahrenheit))) {
+            maxTemp = Convertation.fromKelvinToFahrenheit(mDayForecastList.get(position).getMaxTemp());
+            minTemp = Convertation.fromKelvinToFahrenheit(mDayForecastList.get(position).getMinTemp());
+        }
         holder.minTempTextView.setText(minTemp);
         holder.maxTempTextView.setText(maxTemp);
 

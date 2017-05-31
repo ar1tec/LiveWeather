@@ -13,14 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.maxvi.max.liveweather.R;
 import com.maxvi.max.liveweather.adapters.ForecastAdapter;
@@ -51,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mErrorTextView;
     private ImageButton mMenuButton;
     private TextView mLocationTextView;
+    private double mNowTemp;
 
     public void onRefreshClick(final View view) {
         new FetchWeatherTask().execute();
@@ -71,6 +70,20 @@ public class MainActivity extends AppCompatActivity
                     getString(R.string.pref_location_default));
             new FetchWeatherTask().execute();
             mLocationTextView.setText(location);
+        } else if (key.equals(getString(R.string.pref_units))) {
+            mForecastAdapter.notifyDataSetChanged();
+            mHorizontalForecastAdapter.notifyDataSetChanged();
+            final TextView tvMaxTemp = (TextView) findViewById(R.id.now_temp);
+            final String units = sharedPreferences.getString(key, getString(R.string.unit_celsius));
+            final double temp = mNowTemp;
+            String maxTemp = null;
+            if (units.equals(getString(R.string.unit_celsius))) {
+                maxTemp = Convertation.fromKelvinToCelsius(temp);
+            } else if (units.equals(getString(R.string.unit_fahrenheit))) {
+                maxTemp = Convertation.fromKelvinToFahrenheit(temp);
+            }
+
+            tvMaxTemp.setText(maxTemp);
         }
     }
 
@@ -131,7 +144,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setupHorizontalRecyclerView() {
         mHorizontalRecyclerView = (RecyclerView) findViewById(R.id.rv_horizontal_forecast);
-        mHorizontalForecastAdapter = new HorizontalForecastAdapter();
+        mHorizontalForecastAdapter = new HorizontalForecastAdapter(this);
         mHorizontalRecyclerView.setHasFixedSize(true);
         mHorizontalRecyclerView.setAdapter(mHorizontalForecastAdapter);
     }
@@ -186,9 +199,20 @@ public class MainActivity extends AppCompatActivity
         tvDescription.setText(
                 WeatherUtils.getStringForWeatherCondition(this, weatherId)
         );
+
+        final String preferenceKey = preferences.getString(
+                getString(R.string.pref_units), getString(R.string.unit_celsius));
+        String maxTemp = null;
         final double temp = data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.TEMP_MAX));
+        if (preferenceKey.equals(getString(R.string.unit_celsius))) {
+            maxTemp = Convertation.fromKelvinToCelsius(temp);
+        } else if (preferenceKey.equals(getString(R.string.unit_fahrenheit))) {
+            maxTemp = Convertation.fromKelvinToFahrenheit(temp);
+        }
+
+        mNowTemp = temp;
         final TextView tvMaxTemp = (TextView) findViewById(R.id.now_temp);
-        tvMaxTemp.setText(Convertation.fromKelvinToCelsius(temp));
+        tvMaxTemp.setText(maxTemp);
     }
 
     private void showErrorMessage() {
